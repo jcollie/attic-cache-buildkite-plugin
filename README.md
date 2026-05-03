@@ -1,7 +1,7 @@
 <!-- SPDX-FileCopyrightText: © 2024 Jeffrey C. Ollie <jeff@ocjtech.us> -->
 <!-- SPDX-License-Identifier: MIT -->
 
-# Enable Nix caching on your Buildkite agent using Attic
+# Enable caching of your Nix builds on your Buildkite agent using Attic
 
 ## Example
 

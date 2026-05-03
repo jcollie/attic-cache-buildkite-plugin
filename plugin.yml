@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 name: Attic Cache
-description: Enable Nix caching on your Buildkite agent using Attic
+description: Enable caching of your Nix builds on your Buildkite agent using Attic
 author: https://git.ocjtech.us/jeff/
 requirements:
   - nix
