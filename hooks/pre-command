@@ -3,8 +3,6 @@
 # SPDX-FileCopyrightText: © 2026 Jeffrey C. Ollie
 # SPDX-License-Identifier: MIT
 
-$attic="nix run nixpkgs#attic-client --"
-
 ATTIC_TMP_DIR=$(mktemp -d)
 export ATTIC_TMP_DIR
 
@@ -45,12 +43,12 @@ if [[ "$cache" == "" ]]; then
 fi
 
 # log into the server
-$attic login "$server" "$endpoint" "$token"
+nix run nixpkgs#attic-client -- login "$server" "$endpoint" "$token"
 # enable use of the cache
-$attic use "$cache"
+nix run nixpkgs#attic-client -- use "$cache"
 # build a list of what's currently in the store
 nix path-info --all | LANG=C sort > "$ATTIC_TMP_DIR/before"
 
 # watch the cache in the background
-nohup $attic watch-store "$server:$cache" > "$ATTIC_TMP_DIR/watch-store.log" 2>&1 &
+nohup nix run nixpkgs#attic-client -- watch-store "$server:$cache" > "$ATTIC_TMP_DIR/watch-store.log" 2>&1 &
 echo "$!" > "$ATTIC_TMP_DIR/watch-store.pid"
