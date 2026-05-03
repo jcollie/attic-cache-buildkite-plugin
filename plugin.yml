@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: © 2026 Jeffrey C. Ollie <jeff@ocjtech.us>
+# SPDX-License-Identifier: MIT
+
+name: Attic Cache
+description: Enable Nix caching on your Buildkite agent using Attic
+author: https://git.ocjtech.us/jeff/
+requirements:
+  - nix
+configuration:
+  properties:
+    server:
+      type: string
+    endpoint:
+      type: string
+    token:
+      type: string
+    cache:
+      type: string
+  additionalProperties: false

@@ -1,0 +1,30 @@
+#!/usr/bin/env -S nix shell nixpkgs#bash nixpkgs#attic-client --command bash
+
+# SPDX-FileCopyrightText: © 2026 Jeffrey C. Ollie
+# SPDX-License-Identifier: MIT
+
+cache="$BUILDKITE_PLUGIN_ATTIC_CACHE_CACHE"
+if [[ "$cache" == "" ]]; then
+  cache="$ATTIC_CACHE_CACHE"
+fi
+if [[ "$cache" == "" ]]; then
+  echo "Missing cache configuration."
+  exit 1
+fi
+
+if [[ -n "$ATTIC_TMP_DIR" ]]; then
+  # try and kill the "watch-store" background command
+  pid=<("$ATTIC_TMP_DIR/watch-store.pid")
+  if [[ -n "$pid" ]]; then
+    kill "$pid"
+  fi
+
+  # list out everything that's in the store
+  nix path-info --all | LANG=C sort > "$ATTIC_TMP_DIR/after"
+
+  # compare that to what we started out
+  comm -13 .git/attic-before .git/attic-after > "$ATTIC_TMP_DIR/new"
+
+  # try and push all the new stuff to our cache
+  cat "$ATTIC_TMP_DIR/new" | attic push "$cache" --stdin
+fi

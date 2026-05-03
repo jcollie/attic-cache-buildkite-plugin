@@ -1,0 +1,54 @@
+#!/usr/bin/env -S nix shell nixpkgs#bash nixpkgs#attic-client --command bash
+
+# SPDX-FileCopyrightText: © 2026 Jeffrey C. Ollie
+# SPDX-License-Identifier: MIT
+
+ATTIC_TMP_DIR=$(mktmp -d)
+export ATTIC_TMP_DIR
+
+server="$BUILDKITE_PLUGIN_ATTIC_CACHE_SERVER"
+if [[ "$server" == "" ]]; then
+  server="$ATTIC_CACHE_SERVER"
+fi
+if [[ "$server" == "" ]]; then
+  echo "Missing server configuration."
+  exit 1
+fi
+
+endpoint="$BUILDKITE_PLUGIN_ATTIC_CACHE_ENDPOINT"
+if [[ "$server" == "" ]]; then
+  endpoint="$ATTIC_CACHE_ENDPOINT"
+fi
+if [[ "$endpoint" == "" ]]; then
+  echo "Missing endpoint configuration."
+  exit 1
+fi
+
+token="$BUILDKITE_PLUGIN_ATTIC_CACHE_TOKEN"
+if [[ "$server" == "" ]]; then
+  token="$ATTIC_CACHE_TOKEN"
+fi
+if [[ "$token" == "" ]]; then
+  echo "Missing token configuration."
+  exit 1
+fi
+
+cache="$BUILDKITE_PLUGIN_ATTIC_CACHE_CACHE"
+if [[ "$cache" == "" ]]; then
+  cache="$ATTIC_CACHE_CACHE"
+fi
+if [[ "$cache" == "" ]]; then
+  echo "Missing cache configuration."
+  exit 1
+fi
+
+# log into the server
+attic login "$server" "$endpoint" "$token"
+# enable use of the cache
+attic use "$cache"
+# build a list of what's currently in the store
+nix path-info --all | LANG=C sort > "$ATTIC_TMP_DIR/before"
+
+# watch the cache in the background
+nohup attic watch-store "$server:$cache" > "$ATTIC_TMP_DIR/watch-store.log" 2>&1 &
+echo "$!" > "$ATTIC_TMP_DIR/watch-store.pid"
