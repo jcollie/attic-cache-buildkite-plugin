@@ -18,10 +18,9 @@ if [[ -n "$pid" ]]; then
   kill "$pid"
 fi
 
+echo "--- :notebook: 'attic watch-store' log"
 if [[ -f "$ATTIC_TMP_DIR/watch-store.log" ]]; then
-  echo "-- 'attic watch-store' log ------------------------------------"
   cat "$ATTIC_TMP_DIR/watch-store.log"
-  echo "-- 'attic watch-store' log ------------------------------------"
 fi
 
 # list out everything that's in the store
@@ -30,5 +29,6 @@ nix path-info --all | LANG=C sort > "$ATTIC_TMP_DIR/after"
 # compare that to what we started out
 comm -13 "$ATTIC_TMP_DIR/before"  "$ATTIC_TMP_DIR/after" > "$ATTIC_TMP_DIR/new"
 
+echo "--- :notebook: pushing new store entries to the cache"
 # try and push all the new stuff to our cache
 cat "$ATTIC_TMP_DIR/new" | nix run nixpkgs#attic-client -- push "$cache" --stdin
