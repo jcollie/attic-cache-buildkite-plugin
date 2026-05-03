@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: © 2026 Jeffrey C. Ollie
 # SPDX-License-Identifier: MIT
 
-alias attic="nix run nixpkgs#attic-client --"
+attic="nix run nixpkgs#attic-client --"
 
 cache="$BUILDKITE_PLUGIN_ATTIC_CACHE_CACHE"
 if [[ "$cache" == "" ]]; then
@@ -33,4 +33,4 @@ nix path-info --all | LANG=C sort > "$ATTIC_TMP_DIR/after"
 comm -13 "$ATTIC_TMP_DIR/before"  "$ATTIC_TMP_DIR/after" > "$ATTIC_TMP_DIR/new"
 
 # try and push all the new stuff to our cache
-cat "$ATTIC_TMP_DIR/new" | attic push "$cache" --stdin
+cat "$ATTIC_TMP_DIR/new" | $attic push "$cache" --stdin
