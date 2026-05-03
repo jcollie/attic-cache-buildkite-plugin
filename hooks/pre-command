@@ -6,6 +6,8 @@
 ATTIC_TMP_DIR=$(mktemp -d)
 export ATTIC_TMP_DIR
 
+echo "ATTIC_TMP_DIR: $ATTIC_TMP_DIR"
+
 server="$BUILDKITE_PLUGIN_ATTIC_CACHE_SERVER"
 if [[ "$server" == "" ]]; then
   server="$ATTIC_CACHE_SERVER"

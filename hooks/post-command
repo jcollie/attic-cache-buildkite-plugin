@@ -12,11 +12,19 @@ if [[ "$cache" == "" ]]; then
   exit 1
 fi
 
+echo "ATTIC_TMP_DIR: $ATTIC_TMP_DIR"
+
 if [[ -n "$ATTIC_TMP_DIR" ]]; then
   # try and kill the "watch-store" background command
   pid=<("$ATTIC_TMP_DIR/watch-store.pid")
   if [[ -n "$pid" ]]; then
     kill "$pid"
+  fi
+
+  if [[ -f "$ATTIC_TMP_DIR/watch-store.log" ]]; then
+    echo "-- 'attic watch-store' log ------------------------------------"
+    cat "$ATTIC_TMP_DIR/watch-store.log"
+    echo "-- 'attic watch-store' log ------------------------------------"
   fi
 
   # list out everything that's in the store
