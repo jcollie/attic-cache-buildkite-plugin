@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: © 2026 Jeffrey C. Ollie
 # SPDX-License-Identifier: MIT
 
-ATTIC_TMP_DIR=$(mktmp -d)
+ATTIC_TMP_DIR=$(mktemp -d)
 export ATTIC_TMP_DIR
 
 server="$BUILDKITE_PLUGIN_ATTIC_CACHE_SERVER"
