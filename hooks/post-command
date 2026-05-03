@@ -16,7 +16,7 @@ if [[ "$cache" == "" ]]; then
 fi
 
 # try and kill the "watch-store" background command
-pid=<("$ATTIC_TMP_DIR/watch-store.pid")
+pid=$(cat "$ATTIC_TMP_DIR/watch-store.pid")
 if [[ -n "$pid" ]]; then
   kill "$pid"
 fi
@@ -31,7 +31,7 @@ fi
 nix path-info --all | LANG=C sort > "$ATTIC_TMP_DIR/after"
 
 # compare that to what we started out
-comm -13 .git/attic-before .git/attic-after > "$ATTIC_TMP_DIR/new"
+comm -13 "$ATTIC_TMP_DIR/before"  "$ATTIC_TMP_DIR/after" > "$ATTIC_TMP_DIR/new"
 
 # try and push all the new stuff to our cache
 cat "$ATTIC_TMP_DIR/new" | attic push "$cache" --stdin
